@@ -6,8 +6,8 @@
  *      2. Is the referrer iternal to the site?
  */
 
-var campaignObj = "Campaign";
-window[campaignObj] = {
+var pluginObj = "Campaign";
+window[pluginObj] = {
   // config settings
   loggerEnabled: false, // set to true to view console logs / messages
   loggerPrefix: "CAMPAIGN LOGGER",
@@ -52,7 +52,7 @@ window[campaignObj] = {
    * @param payload.referringDomain {string}
    * @returns {object} => { campaign: "", channel: "", referringDomain: "" }
    */
-  get: function (payload) {
+  getCampaign: function (payload) {
     this.logger('start get()');
     var trackingCode = payload.trackingCode || '',
       referringDomain = payload.referringDomain || '';
@@ -96,29 +96,57 @@ window[campaignObj] = {
   }
 }
 // Campaign.loggerEnabled = true;
-// var campaignInfo = Campaign.get({
+// var campaignInfo = Campaign.getCampaign({
 //   trackingCode: 'abc_123',
 //   referringDomain: 'example.com'
 // });
 // Campaign.logger(campaignInfo, "table");
 
 Campaign.loggerEnabled = true;
-var tests = [
-  { trackingCode: '', referringDomain: '' },
-  { trackingCode: 'abc_123', referringDomain: '' },
-  { trackingCode: 'def_456', referringDomain: 'parzival.com' },
-  { trackingCode: '', referringDomain: 'bing.com' },
-  { trackingCode: '', referringDomain: 'yahoo.com' },
-  { trackingCode: 'helenback', referringDomain: 'aech.com' },
-  { trackingCode: '', referringDomain: 'art3mis.com' }
+var tests = [{
+    trackingCode: '',
+    referringDomain: '',
+    expectedChannel: 'direct'
+  }, // direct, no referrer or campaign info
+  {
+    trackingCode: 'abc_123',
+    referringDomain: '',
+    expectedChannel: 'abc'
+  },
+  {
+    trackingCode: 'def_456',
+    referringDomain: 'parzival.com',
+    expectedChannel: 'def'
+  },
+  {
+    trackingCode: 'helenback',
+    referringDomain: 'aech.com',
+    expectedChannel: 'helenback'
+  },
+  {
+    trackingCode: '',
+    referringDomain: 'bing.com',
+    expectedChannel: 'seo'
+  },
+  {
+    trackingCode: '',
+    referringDomain: 'yahoo.com',
+    expectedChannel: 'seo'
+  },
+  {
+    trackingCode: '',
+    referringDomain: 'art3mis.com',
+    expectedChannel: 'ref'
+  }
 ];
 
 var output = [];
-for(item in tests) {
-  var trafficSource = Campaign.get(tests[item]);
+for (item in tests) {
+  var trafficSource = Campaign.getCampaign(tests[item]);
   output.push({
     p_trackingCode: tests[item].trackingCode,
     p_referringDomain: tests[item].referringDomain,
+    p_expected: tests[item].expectedChannel,
     r_campaign: trafficSource.campaign,
     r_channel: trafficSource.channel,
     r_referringDomain: trafficSource.referringDomain

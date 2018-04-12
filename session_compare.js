@@ -4,7 +4,7 @@ var simulator = {
 
   // adobe analytics functions / logic
   countVisitors: function (inputs, totals, tool) {
-    tool = tool.toUpperCase() || 'AA';
+    tool = tool.toUpperCase();
 
     if(tool === 'AA') {
       return (inputs.isNewVisitor) ? this.runningStatus[tool].visitors + 1 : this.runningStatus[tool].visitors;
@@ -16,19 +16,20 @@ var simulator = {
   },
 
   countVisits: function (inputs, totals, tool) {
-    tool = tool.toUpperCase() || 'AA';
+    tool = tool.toUpperCase();
 
     if(tool === 'AA') {
       return (inputs.isNewVisit) ? this.runningStatus[tool].visits + 1 : this.runningStatus[tool].visits;
     } else if(tool === 'GA') {
-      return (inputs.isNewVisit) ? this.runningStatus[tool].visits + 1 : this.runningStatus[tool].visits;
+      // increment ga on new visit AND new campaign
+      return (inputs.isNewVisit || (inputs.campaign && inputs.campaign != '')) ? this.runningStatus[tool].visits + 1 : this.runningStatus[tool].visits;
     } else {
       return 'tool not specified'
     }
   },
 
   countConversions: function (inputs, totals, tool) {
-    tool = tool.toUpperCase() || 'AA';
+    tool = tool.toUpperCase();
 
     if(tool === 'AA') {
       return (inputs.isConversion) ? this.runningStatus[tool].conversions + 1 : this.runningStatus[tool].conversions;
@@ -40,7 +41,7 @@ var simulator = {
   },
 
   countPageViews: function (inputs, totals, tool) {
-    tool = tool.toUpperCase() || 'AA';
+    tool = tool.toUpperCase();
 
     if(tool === 'AA') {
       return (inputs.callType != 'link') ? this.runningStatus[tool].pageViews + 1 : this.runningStatus[tool].pageViews;
@@ -52,7 +53,7 @@ var simulator = {
   },
 
   countLinkEvents: function (inputs, totals, tool) {
-    tool = tool.toUpperCase() || 'AA';
+    tool = tool.toUpperCase();
 
     if(tool === 'AA') {
       return (inputs.callType === 'link') ? this.runningStatus[tool].linkEvents + 1 : this.runningStatus[tool].linkEvents;
@@ -64,7 +65,7 @@ var simulator = {
   },
 
   countInstances: function (inputs, totals, tool) {
-    tool = tool.toUpperCase() || 'AA';
+    tool = tool.toUpperCase();
 
     if(tool === 'AA') {
       return this.runningStatus[tool].instances + 1;
